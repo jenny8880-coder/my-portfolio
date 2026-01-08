@@ -12,7 +12,7 @@ export default function KemtaiShowcase() {
       <div className="w-full max-w-[1440px] px-[120px] py-8">
         <Link href="/work" className="inline-flex items-center text-gray-500 hover:text-black transition-colors">
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Work
+          Back to Projects
         </Link>
       </div>
 
