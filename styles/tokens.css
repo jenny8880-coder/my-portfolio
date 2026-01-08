@@ -1,0 +1,38 @@
+:root {
+  /* Core semantic tokens */
+  --background-primary: #ffffff;
+  --text-primary: #111827;
+  --accent-main: #6366f1;
+
+  /* Motion tokens (can be swapped based on preferences) */
+  --motion-duration-slow: 450ms;
+  --motion-duration-fast: 180ms;
+
+  /* Theme-specific slots – fill these from Figma later */
+  --background-primary-calm: #f5f7fb;
+  --text-primary-calm: #0f172a;
+  --accent-main-calm: #4f46e5;
+
+  --background-primary-vibrant: #0f172a;
+  --text-primary-vibrant: #f9fafb;
+  --accent-main-vibrant: #f97316;
+
+  --background-primary-focused: #0b1120;
+  --text-primary-focused: #e5e7eb;
+  --accent-main-focused: #22c55e;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-slow: 0ms;
+    --motion-duration-fast: 0ms;
+  }
+}
+
+
+
+
+
+
+
+

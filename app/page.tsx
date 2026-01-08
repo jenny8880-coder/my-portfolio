@@ -1,65 +1,78 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import CalmTheme from '@/components/themes/CalmTheme';
+import FocusedTheme from '@/components/themes/FocusedTheme';
+import VibrantTheme from '@/components/themes/VibrantTheme';
+import Onboarding from '@/components/Onboarding';
+import { portfolioData } from '@/lib/data';
+import { usePersonalization } from '@/lib/context/personalization-context';
+
+type ThemeId = 'calm' | 'focused' | 'vibrant';
+
+export default function Page() {
+  const { theme, hasCompletedOnboarding, switchTheme, completeOnboarding } = usePersonalization();
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const completed = localStorage.getItem('hasCompletedOnboarding');
+      return completed !== 'true' && !hasCompletedOnboarding;
+    }
+    return !hasCompletedOnboarding;
+  });
+  const [currentTheme, setCurrentTheme] = useState<ThemeId>(theme as ThemeId);
+
+  // Sync currentTheme with context theme
+  useEffect(() => {
+    setCurrentTheme(theme as ThemeId);
+  }, [theme]);
+
+  const handleOnboardingComplete = (selectedTheme: ThemeId) => {
+    switchTheme(selectedTheme);
+    setCurrentTheme(selectedTheme);
+    completeOnboarding();
+    setShowOnboarding(false);
+  };
+
+  const handleOnboardingSkip = () => {
+    switchTheme('calm');
+    setCurrentTheme('calm');
+    completeOnboarding();
+    setShowOnboarding(false);
+  };
+
+  const renderTheme = () => {
+    switch (currentTheme) {
+      case 'focused':
+        return <FocusedTheme key="focused" data={portfolioData} />;
+      case 'vibrant':
+        return <VibrantTheme key="vibrant" data={portfolioData} />;
+      default:
+        return <CalmTheme key="calm" data={portfolioData} />;
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <>
+      <AnimatePresence mode="wait">
+        {showOnboarding ? (
+          <Onboarding
+            key="onboarding"
+            onComplete={handleOnboardingComplete}
+            onSkip={handleOnboardingSkip}
+          />
+        ) : (
+          <motion.div
+            key="theme"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+            {renderTheme()}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
