@@ -52,7 +52,7 @@ function AnimatedDot({
   );
 }
 
-export function AnimatedBackground() {
+export default function AnimatedBackground() {
   const [dots, setDots] = useState<Array<{
     id: number;
     x: number;
