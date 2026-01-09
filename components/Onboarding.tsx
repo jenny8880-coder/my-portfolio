@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ThemeId } from '@/lib/context/personalization-context';
-
+// Manually define the type here to fix the export error
+type ThemeId = 'calm' | 'focused' | 'vibrant';
 // Animated dots component for ellipsis
 function AnimatedDots() {
   return (
