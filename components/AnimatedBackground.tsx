@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { type ThemeId } from "@/lib/context/personalization-context";
 
 // Generate random dots with gentle fade in/out animation
 function AnimatedDot({ 
@@ -52,7 +53,7 @@ function AnimatedDot({
   );
 }
 
-export default function AnimatedBackground() {
+export default function AnimatedBackground({ theme }: { theme?: ThemeId }) {
   const [dots, setDots] = useState<Array<{
     id: number;
     x: number;

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 // 1. IMPORT THE DATA (The Bread)
 import { portfolioData } from '@/lib/data'; 
+import { type ThemeId } from '@/lib/context/personalization-context';
 import Onboarding from '../components/Onboarding';
 import CalmTheme from '../components/themes/CalmTheme';
 import FocusedTheme from '../components/themes/FocusedTheme';
@@ -11,7 +12,7 @@ import AnimatedBackground from '../components/AnimatedBackground';
 
 export default function Home() {
   const [showOnboarding, setShowOnboarding] = useState(true);
-  const [currentTheme, setCurrentTheme] = useState<'calm' | 'focused' | 'vibrant'>('calm');
+  const [currentTheme, setCurrentTheme] = useState<ThemeId>('calm');
 
   // Cycle through themes: calm -> vibrant -> focused -> calm
   const cycleTheme = () => {
@@ -23,7 +24,7 @@ export default function Home() {
   };
 
   // Handle onboarding completion with theme selection
-  const handleOnboardingComplete = (theme: 'calm' | 'focused' | 'vibrant') => {
+  const handleOnboardingComplete = (theme: ThemeId) => {
     setCurrentTheme(theme);
     setShowOnboarding(false);
   };

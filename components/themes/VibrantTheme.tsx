@@ -590,7 +590,7 @@ function Frame7({ bio }: { bio: PortfolioData['hero']['bio'] }) {
       y: 0,
       scale: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 200,
         damping: 20,
         mass: 0.5
@@ -919,7 +919,7 @@ function Frame10({ social }: { social: PortfolioData['social'] }) {
       y: 0,
       scale: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 200,
         damping: 20
       }

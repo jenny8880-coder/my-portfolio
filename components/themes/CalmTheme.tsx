@@ -198,9 +198,9 @@ function AnimatedCircle({
   );
 }
 
-function Component({ className }: { className?: string }) {
+function Component({ className, style }: { className?: string; style?: React.CSSProperties }) {
   return (
-    <div className={className} data-name="Component 6">
+    <div className={className} data-name="Component 6" style={style}>
       {/* Pink circle - morphing from #FEEAE6 80% to #F9D8D1 80% */}
       <AnimatedCircle
         initialX={-206}
@@ -252,9 +252,9 @@ function Component({ className }: { className?: string }) {
   );
 }
 
-function Component1({ className }: { className?: string }) {
+function Component1({ className, style }: { className?: string; style?: React.CSSProperties }) {
   return (
-    <div className={className} data-name="Component 10" style={{ overflow: 'visible' }}>
+    <div className={className} data-name="Component 10" style={{ overflow: 'visible', ...style }}>
       <Component className="absolute inset-0" style={{ overflow: 'visible' }} />
     </div>
   );
