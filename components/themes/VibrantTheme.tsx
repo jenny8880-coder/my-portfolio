@@ -105,7 +105,9 @@ function Frame28({ navItems }: { navItems: PortfolioData['navigation']['items'] 
   const handleNavClick = (label: string) => {
     const sectionId = label.toLowerCase();
     setActiveSection(sectionId);
-    const element = document.getElementById(sectionId);
+    // Map "work" to "projects-section" for consistency with other themes
+    const elementId = sectionId === 'work' ? 'projects-section' : sectionId;
+    const element = document.getElementById(elementId);
     if (element) {
       // Scroll to center the section in the viewport
       element.scrollIntoView({ 
@@ -114,7 +116,7 @@ function Frame28({ navItems }: { navItems: PortfolioData['navigation']['items'] 
         inline: 'nearest'
       });
     } else {
-      console.log('Element not found:', sectionId);
+      console.log('Element not found:', elementId);
     }
   };
 
@@ -658,11 +660,30 @@ function Frame7({ bio }: { bio: PortfolioData['hero']['bio'] }) {
           <motion.span 
             key={index} 
             variants={sentenceItem}
-            style={{ display: 'block', marginBottom: index < paragraphs.length - 1 ? '0.5em' : '0' }}
+            style={{ display: 'block', marginBottom: index < paragraphs.length - 1 ? '0.5em' : '0.5em' }}
           >
             {paragraph}
           </motion.span>
         ))}
+        <motion.span 
+          variants={sentenceItem}
+          style={{ display: 'block', marginTop: '1em' }}
+        >
+          <Link 
+            href="/work/adaptive-portfolio#designer-section"
+            className="text-white hover:text-[#FFD700] transition-colors inline-block"
+            style={{ 
+              fontFamily: "'Akshar', 'Akshar Fallback', sans-serif",
+              fontWeight: 400,
+              fontSize: '24px',
+              textDecoration: 'underline',
+              textDecorationColor: 'rgba(255, 255, 255, 0.6)',
+              textUnderlineOffset: '4px'
+            }}
+          >
+            read more
+          </Link>
+        </motion.span>
       </motion.div>
     </motion.div>
   );
@@ -899,6 +920,8 @@ function Frame10({ social }: { social: PortfolioData['social'] }) {
     phone: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const isFormValid = formData.firstName.trim() !== '' && 
                       formData.email.trim() !== '' && 
@@ -912,11 +935,55 @@ function Frame10({ social }: { social: PortfolioData['social'] }) {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!isFormValid) return;
-    // Handle form submission - could open email client or send to API
-    window.location.href = `mailto:${social.email.url.replace('mailto:', '')}?subject=Contact from Portfolio&body=First Name: ${formData.firstName}%0D%0ALast Name: ${formData.lastName}%0D%0AEmail: ${formData.email}%0D%0APhone: ${formData.phone}%0D%0A%0D%0AMessage:%0D%0A${formData.message}`;
+    if (!isFormValid || isSubmitting) return;
+    
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      // Send email using the API route
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          message: formData.message,
+          to: 'jenny8880@gmail.com'
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        // Reset form
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          message: ''
+        });
+        // Reset status after 3 seconds
+        setTimeout(() => setSubmitStatus('idle'), 3000);
+      } else {
+        setSubmitStatus('error');
+        setTimeout(() => setSubmitStatus('idle'), 3000);
+      }
+    } catch (error) {
+      console.error('Error sending email:', error);
+      setSubmitStatus('error');
+      setTimeout(() => setSubmitStatus('idle'), 3000);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const formContainer = {
@@ -1071,7 +1138,6 @@ function Frame10({ social }: { social: PortfolioData['social'] }) {
                 whileFocus={{ 
                   scale: 1.01,
                   backgroundColor: 'rgba(255,255,255,0.65)',
-                  borderColor: 'rgba(255, 215, 0, 0.5)',
                   transition: { 
                     type: "spring",
                     stiffness: 300,
@@ -1108,7 +1174,6 @@ function Frame10({ social }: { social: PortfolioData['social'] }) {
                 whileFocus={{ 
                   scale: 1.01,
                   backgroundColor: 'rgba(255,255,255,0.65)',
-                  borderColor: 'rgba(255, 215, 0, 0.5)',
                   transition: { 
                     type: "spring",
                     stiffness: 300,
@@ -1149,7 +1214,6 @@ function Frame10({ social }: { social: PortfolioData['social'] }) {
                 whileFocus={{ 
                   scale: 1.01,
                   backgroundColor: 'rgba(255,255,255,0.65)',
-                  borderColor: 'rgba(255, 215, 0, 0.5)',
                   transition: { 
                     type: "spring",
                     stiffness: 300,
@@ -1186,7 +1250,6 @@ function Frame10({ social }: { social: PortfolioData['social'] }) {
                 whileFocus={{ 
                   scale: 1.01,
                   backgroundColor: 'rgba(255,255,255,0.65)',
-                  borderColor: 'rgba(255, 215, 0, 0.5)',
                   transition: { 
                     type: "spring",
                     stiffness: 300,
@@ -1227,7 +1290,6 @@ function Frame10({ social }: { social: PortfolioData['social'] }) {
             whileFocus={{ 
               scale: 1.01,
               backgroundColor: 'rgba(255,255,255,0.65)',
-              borderColor: 'rgba(255, 215, 0, 0.5)',
               transition: { 
                 type: "spring",
                 stiffness: 300,
@@ -1241,17 +1303,17 @@ function Frame10({ social }: { social: PortfolioData['social'] }) {
         <motion.button
           variants={formItem}
           type="submit"
-          disabled={!isFormValid}
+          disabled={!isFormValid || isSubmitting}
           className={`relative rounded-[8px] shrink-0 w-full mt-[20px] overflow-hidden ${
-            isFormValid 
+            isFormValid && !isSubmitting
               ? 'bg-[#334155] cursor-pointer' 
               : 'bg-[#334155]/50 cursor-not-allowed opacity-60'
           }`}
-          whileHover={isFormValid ? { 
+          whileHover={isFormValid && !isSubmitting ? { 
             scale: 1.02,
             boxShadow: '0 8px 24px rgba(51, 65, 85, 0.4)'
           } : {}}
-          whileTap={isFormValid ? { 
+          whileTap={isFormValid && !isSubmitting ? { 
             scale: 0.95,
             transition: {
               type: "spring",
@@ -1269,11 +1331,19 @@ function Frame10({ social }: { social: PortfolioData['social'] }) {
           <div aria-hidden="true" className="absolute border border-[#334155] border-solid inset-[-1px] pointer-events-none rounded-[9px]" />
           <motion.div 
             className="flex flex-row items-center justify-center size-full"
-            whileHover={{ x: 4 }}
+            whileHover={isFormValid && !isSubmitting ? { x: 4 } : {}}
             transition={{ duration: 0.2 }}
           >
             <div className="content-stretch flex items-center justify-center px-[20px] py-[12px] relative w-full">
-              <p className="leading-[24px] not-italic relative shrink-0 text-[16px] text-nowrap text-white" style={{ fontFamily: "'Akshar', 'Akshar Fallback', sans-serif" }}>Send message</p>
+              {isSubmitting ? (
+                <p className="leading-[24px] not-italic relative shrink-0 text-[16px] text-nowrap text-white" style={{ fontFamily: "'Akshar', 'Akshar Fallback', sans-serif" }}>Sending...</p>
+              ) : submitStatus === 'success' ? (
+                <p className="leading-[24px] not-italic relative shrink-0 text-[16px] text-nowrap text-green-400" style={{ fontFamily: "'Akshar', 'Akshar Fallback', sans-serif" }}>Message sent!</p>
+              ) : submitStatus === 'error' ? (
+                <p className="leading-[24px] not-italic relative shrink-0 text-[16px] text-nowrap text-red-400" style={{ fontFamily: "'Akshar', 'Akshar Fallback', sans-serif" }}>Error. Please try again.</p>
+              ) : (
+                <p className="leading-[24px] not-italic relative shrink-0 text-[16px] text-nowrap text-white" style={{ fontFamily: "'Akshar', 'Akshar Fallback', sans-serif" }}>Send message</p>
+              )}
             </div>
           </motion.div>
         </motion.button>
@@ -1708,7 +1778,7 @@ export default function VibrantTheme({ data, onSwitchVibe }: VibrantThemeProps) 
               <Frame12 bio={data.hero.bio} />
             </div>
             <div className="content-stretch flex flex-col gap-[360px] items-start relative shrink-0 w-full">
-              <div id="work">
+              <div id="projects-section">
                 <Frame20 projects={data.projects} />
               </div>
             </div>

@@ -12,46 +12,66 @@ import AnimatedBackground from '../components/AnimatedBackground';
 
 export default function Home() {
   const [showOnboarding, setShowOnboarding] = useState(true);
-  const [currentTheme, setCurrentTheme] = useState<ThemeId>('calm');
+  // Initialize theme from localStorage or default to 'calm'
+  const [currentTheme, setCurrentTheme] = useState<ThemeId>(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('currentTheme') as ThemeId;
+      if (savedTheme && ['calm', 'focused', 'vibrant'].includes(savedTheme)) {
+        return savedTheme;
+      }
+    }
+    return 'calm';
+  });
 
-  // Check if user is coming from a project detail page (has hash) or has completed onboarding before
+  // Check if user is coming from a project detail page (has hash)
   useEffect(() => {
-    // Check localStorage for onboarding completion
-    const hasCompletedOnboarding = localStorage.getItem('onboardingCompleted') === 'true';
-    
     // Check if URL has hash (coming from project detail page)
-    const hasHash = typeof window !== 'undefined' && window.location.hash === '#projects-section';
+    const hash = typeof window !== 'undefined' ? window.location.hash : '';
+    const hasProjectsHash = hash === '#projects-section' || hash === '#work';
     
-    if (hasCompletedOnboarding || hasHash) {
+    if (hasProjectsHash) {
       setShowOnboarding(false);
       
-      // If coming from hash, scroll to projects section after a brief delay
-      if (hasHash) {
-        setTimeout(() => {
-          const projectsSection = document.getElementById('projects-section');
-          if (projectsSection) {
-            projectsSection.scrollIntoView({ 
-              behavior: 'smooth', 
-              block: 'center' 
-            });
-            setTimeout(() => {
-              window.scrollBy({
-                top: -150,
-                behavior: 'smooth'
-              });
-            }, 100);
-          }
-        }, 100);
+      // Restore theme from localStorage if available
+      const savedTheme = localStorage.getItem('currentTheme') as ThemeId;
+      if (savedTheme && ['calm', 'focused', 'vibrant'].includes(savedTheme)) {
+        setCurrentTheme(savedTheme);
       }
+      
+      // Scroll to projects section after a brief delay
+      setTimeout(() => {
+        // Try projects-section first, then work as fallback
+        const projectsSection = document.getElementById('projects-section') || document.getElementById('work');
+        if (projectsSection) {
+          projectsSection.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          });
+          setTimeout(() => {
+            window.scrollBy({
+              top: -150,
+              behavior: 'smooth'
+            });
+          }, 100);
+        }
+      }, 100);
     }
   }, []);
 
   // Cycle through themes: calm -> vibrant -> focused -> calm
   const cycleTheme = () => {
     setCurrentTheme(prev => {
-      if (prev === 'calm') return 'vibrant';
-      if (prev === 'vibrant') return 'focused';
-      return 'calm';
+      let nextTheme: ThemeId;
+      if (prev === 'calm') nextTheme = 'vibrant';
+      else if (prev === 'vibrant') nextTheme = 'focused';
+      else nextTheme = 'calm';
+      
+      // Save to localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('currentTheme', nextTheme);
+      }
+      
+      return nextTheme;
     });
   };
 
@@ -59,9 +79,10 @@ export default function Home() {
   const handleOnboardingComplete = (theme: ThemeId) => {
     setCurrentTheme(theme);
     setShowOnboarding(false);
-    // Store completion in localStorage
+    // Store completion and theme in localStorage
     if (typeof window !== 'undefined') {
       localStorage.setItem('onboardingCompleted', 'true');
+      localStorage.setItem('currentTheme', theme);
     }
   };
 

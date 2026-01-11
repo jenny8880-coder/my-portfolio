@@ -324,10 +324,11 @@ export default function Onboarding({ onComplete, onSkip }: OnboardingProps) {
                     fontWeight: 500
                   }}
                 >
-                  {selectedTheme === 'calm' && 'Clearing the noise...'}
-                  {selectedTheme === 'focused' && 'Sharpening the details...'}
-                  {selectedTheme === 'vibrant' && 'Mixing colors & energy...'}
-                  {!selectedTheme && 'Tailoring your experience...'}
+                  {isSkipping && 'Getting things ready...'}
+                  {!isSkipping && selectedTheme === 'calm' && 'Clearing the noise...'}
+                  {!isSkipping && selectedTheme === 'focused' && 'Sharpening the details...'}
+                  {!isSkipping && selectedTheme === 'vibrant' && 'Mixing colors & energy...'}
+                  {!isSkipping && !selectedTheme && 'Tailoring your experience...'}
                 </motion.p>
               </motion.div>
             )}

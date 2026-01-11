@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { PortfolioData } from '@/lib/data';
 import { Sparkles, Mail, Linkedin as LinkedinIcon } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
@@ -262,6 +263,8 @@ function Component1({ className, style }: { className?: string; style?: React.CS
 }
 
 function Button({ label, isActive }: { label: string; isActive?: boolean }) {
+  const router = useRouter();
+
   const handleClick = (e: React.MouseEvent) => {
     if (label === 'Work') {
       e.preventDefault();
@@ -285,8 +288,29 @@ function Button({ label, isActive }: { label: string; isActive?: boolean }) {
           }, 100);
         }
       });
+    } else if (label === 'About') {
+      e.preventDefault();
+      e.stopPropagation();
+      // Navigate to adaptive portfolio page with hash
+      router.push('/work/adaptive-portfolio#designer-section');
     }
   };
+
+  // For About, handle navigation with router
+  if (label === 'About') {
+    return (
+      <motion.div 
+        className="content-stretch flex gap-[6px] items-center justify-center px-[16px] py-[10px] relative rounded-[8px] shrink-0 cursor-pointer" 
+        data-name="Button"
+        whileHover={{ scale: 1.05, opacity: 0.8 }}
+        whileTap={{ scale: 0.95 }}
+        transition={{ duration: 0.2 }}
+        onClick={handleClick}
+      >
+        <p className={`font-[var(--font-body)] font-medium leading-[20px] not-italic relative shrink-0 text-[#64748b] text-[14px] text-nowrap ${isActive ? '[text-decoration-skip-ink:none] [text-underline-position:from-font] decoration-solid underline' : ''}`}>{label}</p>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div 
