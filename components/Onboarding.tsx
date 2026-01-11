@@ -2,32 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-// Manually define the type here to fix the export error
-type ThemeId = 'calm' | 'focused' | 'vibrant';
-// Animated dots component for ellipsis
-function AnimatedDots() {
-  return (
-    <span className="inline-block">
-      {[0, 1, 2].map((index) => (
-        <motion.span
-          key={index}
-          initial={{ opacity: 0.3 }}
-          animate={{ 
-            opacity: [0.3, 1, 0.3],
-          }}
-          transition={{
-            duration: 1.4,
-            repeat: Infinity,
-            delay: index * 0.2,
-            ease: "easeInOut"
-          }}
-        >
-          .
-        </motion.span>
-      ))}
-    </span>
-  );
-}
+import { ThemeId } from '@/lib/context/personalization-context';
 
 // Animated background circles from Calm theme
 const AnimatedCircle = ({ 
@@ -141,11 +116,13 @@ export default function Onboarding({ onComplete, onSkip }: OnboardingProps) {
     // Add a small delay to show the selection feedback before transitioning
     setTimeout(() => {
       if (question === 'q1') {
+        // Q1 answer -> just progress to Q2
         setCurrentStep('q2');
       } else if (question === 'q2') {
+        // Q2 answer -> just progress to Q3
         setCurrentStep('q3');
       } else if (question === 'q3') {
-        // Determine theme based on Q3 answer
+        // Q3 answer -> determine theme based on Q3 answer
         const themeMap: Record<string, ThemeId> = {
           'Smooth and calm': 'calm',
           'Energetic and playful': 'vibrant',
@@ -169,12 +146,14 @@ export default function Onboarding({ onComplete, onSkip }: OnboardingProps) {
   const handleSkip = () => {
     setIsSkipping(true);
     setIsProcessing(true);
-    setSelectedTheme(null);
+    // Skip -> send 'calm' theme
+    const theme: ThemeId = 'calm';
+    setSelectedTheme(theme);
     setCurrentStep('intro'); // Keep on intro to show processing screen
     
     // Wait 5000ms (5 seconds) before completing skip
     setTimeout(() => {
-      onSkip();
+      onComplete(theme);
     }, 5000);
   };
 
@@ -345,30 +324,10 @@ export default function Onboarding({ onComplete, onSkip }: OnboardingProps) {
                     fontWeight: 500
                   }}
                 >
-                  {selectedTheme === 'calm' && (
-                    <>
-                      Clearing the noise
-                      <AnimatedDots />
-                    </>
-                  )}
-                  {selectedTheme === 'focused' && (
-                    <>
-                      Sharpening the details
-                      <AnimatedDots />
-                    </>
-                  )}
-                  {selectedTheme === 'vibrant' && (
-                    <>
-                      Mixing colors & energy
-                      <AnimatedDots />
-                    </>
-                  )}
-                  {!selectedTheme && (
-                    <>
-                      Tailoring your experience
-                      <AnimatedDots />
-                    </>
-                  )}
+                  {selectedTheme === 'calm' && 'Clearing the noise...'}
+                  {selectedTheme === 'focused' && 'Sharpening the details...'}
+                  {selectedTheme === 'vibrant' && 'Mixing colors & energy...'}
+                  {!selectedTheme && 'Tailoring your experience...'}
                 </motion.p>
               </motion.div>
             )}
