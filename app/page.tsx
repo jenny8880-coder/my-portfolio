@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+// 1. IMPORT THE DATA (The Bread)
+import { portfolioData } from '@/lib/data'; 
+import { type ThemeId } from '@/lib/context/personalization-context';
 import Onboarding from '../components/Onboarding';
 import CalmTheme from '../components/themes/CalmTheme';
 import FocusedTheme from '../components/themes/FocusedTheme';
@@ -9,14 +12,28 @@ import AnimatedBackground from '../components/AnimatedBackground';
 
 export default function Home() {
   const [showOnboarding, setShowOnboarding] = useState(true);
-  const [currentTheme, setCurrentTheme] = useState<'calm' | 'focused' | 'vibrant'>('calm');
+  const [currentTheme, setCurrentTheme] = useState<ThemeId>('calm');
 
-  // FIX: Added the missing onSkip prop here!
+  // Cycle through themes: calm -> vibrant -> focused -> calm
+  const cycleTheme = () => {
+    setCurrentTheme(prev => {
+      if (prev === 'calm') return 'vibrant';
+      if (prev === 'vibrant') return 'focused';
+      return 'calm';
+    });
+  };
+
+  // Handle onboarding completion with theme selection
+  const handleOnboardingComplete = (theme: ThemeId) => {
+    setCurrentTheme(theme);
+    setShowOnboarding(false);
+  };
+
   if (showOnboarding) {
     return (
       <Onboarding 
-        onComplete={() => setShowOnboarding(false)} 
-        onSkip={() => setShowOnboarding(false)}
+        onComplete={handleOnboardingComplete} 
+        onSkip={() => handleOnboardingComplete('calm')}
       />
     );
   }
@@ -25,16 +42,11 @@ export default function Home() {
     <main className="relative min-h-screen transition-colors duration-500">
       <AnimatedBackground theme={currentTheme} />
 
-      <div className="fixed top-6 right-6 z-50 flex gap-2 bg-white/10 backdrop-blur-md p-2 rounded-full border border-white/20">
-        <button onClick={() => setCurrentTheme('calm')} className="px-4 py-2 rounded-full text-sm font-medium bg-white/80 hover:bg-white transition">Calm</button>
-        <button onClick={() => setCurrentTheme('focused')} className="px-4 py-2 rounded-full text-sm font-medium bg-black/80 text-white hover:bg-black transition">Focused</button>
-        <button onClick={() => setCurrentTheme('vibrant')} className="px-4 py-2 rounded-full text-sm font-medium bg-purple-600/80 text-white hover:bg-purple-600 transition">Vibrant</button>
-      </div>
-
       <div className="relative z-10">
-        {currentTheme === 'calm' && <CalmTheme />}
-        {currentTheme === 'focused' && <FocusedTheme />}
-        {currentTheme === 'vibrant' && <VibrantTheme />}
+        {/* 2. FEED THE DATA TO THE THEMES */}
+        {currentTheme === 'calm' && <CalmTheme data={portfolioData} onSwitchVibe={cycleTheme} />}
+        {currentTheme === 'focused' && <FocusedTheme data={portfolioData} onSwitchVibe={cycleTheme} />}
+        {currentTheme === 'vibrant' && <VibrantTheme data={portfolioData} onSwitchVibe={cycleTheme} />}
       </div>
     </main>
   );

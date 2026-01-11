@@ -8,6 +8,9 @@ import {
   type OnboardingOption,
   type ThemeId,
 } from "../data/onboarding-config";
+
+// Re-export ThemeId for use in other components
+export type { ThemeId };
 import { THEME_CONFIGS } from "../data/theme-config";
 
 export type AnswerMap = Record<number, OnboardingOption | undefined>;
