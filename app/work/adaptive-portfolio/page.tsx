@@ -1,18 +1,17 @@
 'use client';
-// Update v1
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { portfolioData } from '@/lib/data';
 
-export default function KemtaiShowcase() {
-  // Find the kemtai project from data
-  const project = portfolioData.projects.find(p => p.id === 'kemtai');
+export default function AdaptivePortfolioShowcase() {
+  // Find the adaptive-portfolio project from data
+  const project = portfolioData.projects.find(p => p.id === 'adaptive-portfolio');
   const contentImages = project?.contentImages || [];
   
   // Get projects that have detail pages (contentImages)
   const projectsWithDetailPages = portfolioData.projects.filter(p => p.contentImages && p.contentImages.length > 0);
-  const currentIndex = projectsWithDetailPages.findIndex(p => p.id === 'kemtai');
+  const currentIndex = projectsWithDetailPages.findIndex(p => p.id === 'adaptive-portfolio');
   const previousProject = currentIndex > 0 ? projectsWithDetailPages[currentIndex - 1] : null;
   const nextProject = currentIndex < projectsWithDetailPages.length - 1 ? projectsWithDetailPages[currentIndex + 1] : null;
   
@@ -45,11 +44,11 @@ export default function KemtaiShowcase() {
       {contentImages.map((imagePath, index) => (
         <section 
           key={index} 
-          className="w-full max-w-[1440px] px-[120px]"
+          className={`w-full max-w-[1440px] px-[120px] ${index > 0 ? 'mt-[30px]' : ''}`}
         >
           <Image 
             src={imagePath} 
-            alt={`${project?.title || 'Kemtai'} - Section ${index + 1}`}
+            alt={`${project?.title || 'Adaptive Portfolio'} - Section ${index + 1}`}
             width={1440} 
             height={900} 
             quality={100}
@@ -110,17 +109,10 @@ export default function KemtaiShowcase() {
 
       {/* SEO & Accessibility (Hidden Text) */}
       <div className="sr-only">
-        <h1>Kemtai - Computer Vision AI</h1>
-        <p>A B2B AI-powered web app for the medical and wellness sectors.</p>
-        <h2>Visual Identity</h2>
-        <p>Accessible and encouraging. We moved away from sterile medical aesthetics to make therapy feel friendly.</p>
-        <h2>Care Management</h2>
-        <p>A centralized dashboard for caregivers to manage patient plans and monitor adherence.</p>
-        <h2>Impact</h2>
-        <p>Serving thousands of active users weekly, bridging the gap between clinical precision and home accessibility.</p>
+        <h1>Adaptive Portfolio - Case Study</h1>
+        <p>A personalized portfolio experience with adaptive themes and interactive onboarding.</p>
       </div>
 
     </main>
   );
 }
-

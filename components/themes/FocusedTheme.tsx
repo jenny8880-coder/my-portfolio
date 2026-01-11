@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { PortfolioData } from '@/lib/data';
 import { Sparkles, Mail, Linkedin } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -214,8 +215,19 @@ function ProjectCard({ project, isLarge = false }: { project: PortfolioData['pro
   // Use focused image if available, otherwise fall back to regular image
   const imageSrc = project.imageFocused || project.image;
   
+  // Get the detail page URL for projects with contentImages
+  const getProjectUrl = () => {
+    if (project.id === 'kemtai') return '/work/kemtai';
+    if (project.id === 'philips') return '/work/medical';
+    if (project.id === 'adaptive-portfolio') return '/work/adaptive-portfolio';
+    return '#'; // No detail page for other projects
+  };
+  
+  const projectUrl = getProjectUrl();
+  const hasDetailPage = project.id === 'kemtai' || project.id === 'philips' || project.id === 'adaptive-portfolio';
+  
   if (isLarge) {
-    return (
+    const cardContent = (
       <motion.div
         className="bg-[#1c222f] h-[336px] overflow-hidden relative w-full cursor-pointer"
         whileHover={{ y: -8, scale: 1.02, boxShadow: '0px 8px 30px 0px rgba(0,0,0,0.4)' }}
@@ -248,10 +260,20 @@ function ProjectCard({ project, isLarge = false }: { project: PortfolioData['pro
         <p className="basis-0 font-inter font-normal grow leading-[1.5] min-h-px min-w-px not-italic relative shrink-0 text-white text-[14px]" style={{ fontFamily: 'var(--font-inter)' }}>{project.description}</p>
       </motion.div>
     </motion.div>
-  );
-}
+    );
+    
+    if (hasDetailPage) {
+      return (
+        <Link href={projectUrl} className="block w-full">
+          {cardContent}
+        </Link>
+      );
+    }
+    
+    return cardContent;
+  }
   
-  return (
+  const cardContent = (
     <motion.div
       className="bg-[#1c222f] h-[280px] overflow-hidden relative w-full cursor-pointer"
       whileHover={{ y: -8, scale: 1.02, boxShadow: '0px 8px 30px 0px rgba(0,0,0,0.4)' }}
@@ -285,6 +307,16 @@ function ProjectCard({ project, isLarge = false }: { project: PortfolioData['pro
       </motion.div>
     </motion.div>
   );
+  
+  if (hasDetailPage) {
+    return (
+      <Link href={projectUrl} className="block w-full">
+        {cardContent}
+      </Link>
+    );
+  }
+  
+  return cardContent;
 }
 
 // Projects grid
@@ -381,20 +413,11 @@ function Frame30({ social }: { social: PortfolioData['social'] }) {
 
 export default function FocusedTheme({ data, onSwitchVibe }: FocusedThemeProps) {
   return (
-    <motion.div 
+    <div 
       className="content-stretch flex items-start justify-center relative w-full min-h-screen overflow-x-hidden" 
       data-name="Focused"
-      animate={{
-        background: [
-          'radial-gradient(ellipse 600px 450px at 295px 300px, rgba(49,39,32,1) 0%, rgba(12,12,12,1) 75%) no-repeat center / 100% 100%',
-          'radial-gradient(ellipse 650px 500px at 295px 300px, rgba(49,39,32,1) 0%, rgba(12,12,12,1) 75%) no-repeat center / 100% 100%',
-          'radial-gradient(ellipse 600px 450px at 295px 300px, rgba(49,39,32,1) 0%, rgba(12,12,12,1) 75%) no-repeat center / 100% 100%',
-        ]
-      }}
-      transition={{
-        duration: 8,
-        repeat: Infinity,
-        ease: "easeInOut",
+      style={{
+        background: 'radial-gradient(ellipse 600px 450px at 295px 300px, rgba(49,39,32,1) 0%, rgba(12,12,12,1) 75%) no-repeat center / 100% 100%',
       }}
     >
       <AnimatedBackground />
@@ -433,7 +456,7 @@ export default function FocusedTheme({ data, onSwitchVibe }: FocusedThemeProps) 
           <Frame30 social={data.social} />
         </motion.div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { PortfolioData } from '@/lib/data';
 import { Sparkles, Mail, Linkedin as LinkedinIcon } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
@@ -450,9 +451,19 @@ function ProjectCard({ project }: { project: PortfolioData['projects'][0] }) {
     return { height: '246px', width: '360px' };
   };
   
-  const imageDims = getImageDimensions();
+  // Get the detail page URL for projects with contentImages
+  const getProjectUrl = () => {
+    if (project.id === 'kemtai') return '/work/kemtai';
+    if (project.id === 'philips') return '/work/medical';
+    if (project.id === 'adaptive-portfolio') return '/work/adaptive-portfolio';
+    return '#'; // No detail page for other projects
+  };
   
-  return (
+  const imageDims = getImageDimensions();
+  const projectUrl = getProjectUrl();
+  const hasDetailPage = project.id === 'kemtai' || project.id === 'philips' || project.id === 'adaptive-portfolio';
+  
+  const cardContent = (
     <motion.div 
       className="bg-[rgba(255,255,255,0.7)] content-stretch flex flex-col items-start pb-[28px] pt-[12px] px-[12px] relative rounded-[16px] shrink-0 w-[460px] cursor-pointer"
       whileHover={{ y: -4, boxShadow: '0px 4px 20px 0px rgba(133,116,180,0.15)' }}
@@ -480,6 +491,16 @@ function ProjectCard({ project }: { project: PortfolioData['projects'][0] }) {
       </div>
     </motion.div>
   );
+  
+  if (hasDetailPage) {
+    return (
+      <Link href={projectUrl} className="block w-full">
+        {cardContent}
+      </Link>
+    );
+  }
+  
+  return cardContent;
 }
 
 function Frame20({ projects }: { projects: PortfolioData['projects'] }) {

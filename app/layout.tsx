@@ -28,7 +28,7 @@ const aksharFont = Akshar({
 });
 
 export const metadata: Metadata = {
-  title: "The Adaptive Portfolio",
+  title: "Jenny's Design Portfolio",
   description:
     "A personal portfolio that adapts theme, density, and motion based on how you like to move through the work.",
 };

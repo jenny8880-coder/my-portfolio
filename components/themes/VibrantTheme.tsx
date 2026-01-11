@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { PortfolioData } from '@/lib/data';
 import { Sparkles, Linkedin, Mail, ChevronRight } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
@@ -714,7 +715,18 @@ function ProjectCard({ project }: { project: PortfolioData['projects'][0] }) {
   const imageSrc = getVibrantImage(project.id);
   const bgColor = getVibrantColor(project.id);
   
-  return (
+  // Get the detail page URL for projects with contentImages
+  const getProjectUrl = () => {
+    if (project.id === 'kemtai') return '/work/kemtai';
+    if (project.id === 'philips') return '/work/medical';
+    if (project.id === 'adaptive-portfolio') return '/work/adaptive-portfolio';
+    return '#'; // No detail page for other projects
+  };
+  
+  const projectUrl = getProjectUrl();
+  const hasDetailPage = project.id === 'kemtai' || project.id === 'philips' || project.id === 'adaptive-portfolio';
+  
+  const cardContent = (
     <motion.div 
       className="relative rounded-[20px] overflow-hidden cursor-pointer" 
       style={{ backgroundColor: bgColor, width: '890px', willChange: 'transform' }}
@@ -816,6 +828,16 @@ function ProjectCard({ project }: { project: PortfolioData['projects'][0] }) {
       </div>
     </motion.div>
   );
+  
+  if (hasDetailPage) {
+    return (
+      <Link href={projectUrl} className="block w-full">
+        {cardContent}
+      </Link>
+    );
+  }
+  
+  return cardContent;
 }
 
 // Projects section

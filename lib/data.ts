@@ -32,6 +32,7 @@ export interface PortfolioData {
     image: string;
     imageFocused?: string; // Optional focused theme image
     imageBackgroundColor: string;
+    contentImages?: string[]; // Array of image paths for detail view
   }>;
 }
 
@@ -70,7 +71,12 @@ export const portfolioData: PortfolioData = {
       badge: 'Showcase',
       image: '/images/kemtai_project_calm.png',
       imageFocused: '/images/kemtai_focused.png',
-      imageBackgroundColor: '#e9f2f9'
+      imageBackgroundColor: '#e9f2f9',
+      contentImages: [
+        '/kemtai/kemtai-section-1.png',
+        '/kemtai/kemtai-section-2.png',
+        '/kemtai/kemtai-section-3.png'
+      ]
     },
     {
       id: 'adaptive-portfolio',
@@ -79,7 +85,12 @@ export const portfolioData: PortfolioData = {
       badge: 'Case study',
       image: '/images/adaptive_portfolio_calm.png',
       imageFocused: '/images/portfolio_project_focused.png',
-      imageBackgroundColor: '#eaf1fb'
+      imageBackgroundColor: '#eaf1fb',
+      contentImages: [
+        '/portfolio/portfolio-section-1.png',
+        '/portfolio/portfolio-section-2.png',
+        '/portfolio/portfolio-section-3.png'
+      ]
     },
     {
       id: 'philips',
@@ -88,7 +99,13 @@ export const portfolioData: PortfolioData = {
       badge: 'Case study',
       image: '/images/philips_project_calm.png',
       imageFocused: '/images/philips_project_focused.png',
-      imageBackgroundColor: '#eef3f9'
+      imageBackgroundColor: '#eef3f9',
+      contentImages: [
+        '/medical/medical-section-1.png',
+        '/medical/medical-section-2.png',
+        '/medical/medical-section-3.png',
+        '/medical/medical-section-4.png'
+      ]
     },
     {
       id: 'selected-work',
