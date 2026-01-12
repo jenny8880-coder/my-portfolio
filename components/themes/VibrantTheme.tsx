@@ -853,7 +853,7 @@ function ProjectCard({ project }: { project: PortfolioData['projects'][0] }) {
   
   if (hasDetailPage) {
     return (
-      <Link href={projectUrl} className="block w-full">
+      <Link href={projectUrl} className="block w-full no-underline" style={{ textDecoration: 'none' }}>
         {cardContent}
       </Link>
     );

@@ -23,6 +23,7 @@ export default function MedicalCaseStudy() {
     if (projectId === 'kemtai') return '/work/kemtai';
     if (projectId === 'philips') return '/work/medical';
     if (projectId === 'adaptive-portfolio') return '/work/adaptive-portfolio';
+    if (projectId === 'selected-work') return '/work/selected-work';
     return '#';
   };
 
