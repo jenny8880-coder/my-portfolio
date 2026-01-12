@@ -89,10 +89,14 @@ const BackgroundCircles = () => {
 export default function MobileBlock() {
   const [isMobile, setIsMobile] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
+  const [cacheBuster, setCacheBuster] = useState<string>('');
 
   useEffect(() => {
     // Only run on client side
     setHasMounted(true);
+    
+    // Set cache buster for SVG updates
+    setCacheBuster(`?t=${Date.now()}`);
     
     // Check if device is mobile
     const checkMobile = () => {
@@ -143,7 +147,7 @@ export default function MobileBlock() {
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
         <img 
-          src="/images/empty-state.svg" 
+          src={`/images/empty-state.svg${cacheBuster}`}
           alt="" 
           className="w-full max-w-[510px] h-auto"
           style={{ 
@@ -152,6 +156,7 @@ export default function MobileBlock() {
             height: 'auto', 
             objectFit: 'contain'
           }}
+          key={cacheBuster}
         />
       </motion.div>
     </motion.div>
