@@ -220,11 +220,12 @@ function ProjectCard({ project, isLarge = false }: { project: PortfolioData['pro
     if (project.id === 'kemtai') return '/work/kemtai';
     if (project.id === 'philips') return '/work/medical';
     if (project.id === 'adaptive-portfolio') return '/work/adaptive-portfolio';
+    if (project.id === 'selected-work') return '/work/selected-work';
     return '#'; // No detail page for other projects
   };
   
   const projectUrl = getProjectUrl();
-  const hasDetailPage = project.id === 'kemtai' || project.id === 'philips' || project.id === 'adaptive-portfolio';
+  const hasDetailPage = project.id === 'kemtai' || project.id === 'philips' || project.id === 'adaptive-portfolio' || project.id === 'selected-work';
   
   if (isLarge) {
     const cardContent = (

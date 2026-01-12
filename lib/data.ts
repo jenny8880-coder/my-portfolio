@@ -114,7 +114,16 @@ export const portfolioData: PortfolioData = {
       badge: 'Showcase',
       image: '/images/selected_work_calm.png',
       imageFocused: '/images/selected_work_focused.png',
-      imageBackgroundColor: '#edf1fa'
+      imageBackgroundColor: '#edf1fa',
+      contentImages: [
+        '/selected/1.png',
+        '/selected/2.png',
+        '/selected/3.png',
+        '/selected/4.png',
+        '/selected/5.png',
+        '/selected/6.png',
+        '/selected/7.png'
+      ]
     }
   ]
 };

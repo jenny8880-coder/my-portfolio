@@ -118,10 +118,7 @@ export default function AdaptivePortfolioShowcase() {
           className="inline-flex items-center gap-2 text-gray-700 hover:text-black transition-colors group"
         >
           <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-          <div className="flex flex-col items-start">
-            <span className="text-xs text-gray-500 uppercase tracking-wide">Back to</span>
-            <span className="text-base font-medium group-hover:underline">Projects</span>
-          </div>
+          <span className="text-base font-medium group-hover:underline">Back</span>
         </Link>
       </nav>
 

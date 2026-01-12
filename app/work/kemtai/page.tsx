@@ -1,11 +1,12 @@
 'use client';
-// Update v1
-import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { portfolioData } from '@/lib/data';
+import { useEffect, useState } from 'react';
 
 export default function KemtaiShowcase() {
+  const [cacheBuster, setCacheBuster] = useState<string>('');
+
   // Find the kemtai project from data
   const project = portfolioData.projects.find(p => p.id === 'kemtai');
   const contentImages = project?.contentImages || [];
@@ -24,6 +25,30 @@ export default function KemtaiShowcase() {
     return '#';
   };
 
+  // Cache busting for image updates
+  useEffect(() => {
+    // Set cache buster only on client side to avoid hydration mismatch
+    setCacheBuster(`?t=${Date.now()}`);
+  }, []);
+
+  // Force refresh images on window focus and visibility change (helps catch file updates)
+  useEffect(() => {
+    const handleFocus = () => {
+      setCacheBuster(`?t=${Date.now()}`);
+    };
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        setCacheBuster(`?t=${Date.now()}`);
+      }
+    };
+    window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
   return (
     <main className="min-h-screen bg-white flex flex-col items-center w-full pb-20">
       
@@ -34,10 +59,7 @@ export default function KemtaiShowcase() {
           className="inline-flex items-center gap-2 text-gray-700 hover:text-black transition-colors group"
         >
           <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-          <div className="flex flex-col items-start">
-            <span className="text-xs text-gray-500 uppercase tracking-wide">Back to</span>
-            <span className="text-base font-medium group-hover:underline">Projects</span>
-          </div>
+          <span className="text-base font-medium group-hover:underline">Back</span>
         </Link>
       </nav>
 
@@ -47,14 +69,12 @@ export default function KemtaiShowcase() {
           key={index} 
           className="w-full max-w-[1440px] px-[120px]"
         >
-          <Image 
-            src={imagePath} 
+          <img 
+            key={`${imagePath}-${cacheBuster}`}
+            src={`${imagePath}${cacheBuster}`}
             alt={`${project?.title || 'Kemtai'} - Section ${index + 1}`}
-            width={1440} 
-            height={900} 
-            quality={100}
-            priority={index === 0}
             className="w-full h-auto"
+            loading={index === 0 ? 'eager' : 'lazy'}
           />
         </section>
       ))}
