@@ -138,18 +138,19 @@ export default function MobileBlock() {
       <BackgroundCircles />
       
       <motion.div
-        className="relative z-10 flex flex-col items-center justify-center px-8"
+        className="relative z-10 flex flex-col items-center justify-center px-8 w-full h-full"
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
         <Image 
           src="/empty-state.png" 
-          alt="Please view on desktop" 
+          alt="" 
           width={600}
           height={400}
           className="w-full max-w-[600px] h-auto"
           priority
+          unoptimized
         />
       </motion.div>
     </motion.div>
