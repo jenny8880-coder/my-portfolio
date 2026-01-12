@@ -9,6 +9,7 @@ import CalmTheme from '../components/themes/CalmTheme';
 import FocusedTheme from '../components/themes/FocusedTheme';
 import VibrantTheme from '../components/themes/VibrantTheme';
 import AnimatedBackground from '../components/AnimatedBackground';
+import MobileBlock from '../components/MobileBlock';
 
 export default function Home() {
   const [showOnboarding, setShowOnboarding] = useState(true);
@@ -88,23 +89,29 @@ export default function Home() {
 
   if (showOnboarding) {
     return (
-      <Onboarding 
-        onComplete={handleOnboardingComplete} 
-        onSkip={() => handleOnboardingComplete('calm')}
-      />
+      <>
+        <MobileBlock />
+        <Onboarding 
+          onComplete={handleOnboardingComplete} 
+          onSkip={() => handleOnboardingComplete('calm')}
+        />
+      </>
     );
   }
 
   return (
-    <main className="relative min-h-screen transition-colors duration-500">
-      <AnimatedBackground theme={currentTheme} />
+    <>
+      <MobileBlock />
+      <main className="relative min-h-screen transition-colors duration-500">
+        <AnimatedBackground theme={currentTheme} />
 
-      <div className="relative z-10">
-        {/* 2. FEED THE DATA TO THE THEMES */}
-        {currentTheme === 'calm' && <CalmTheme data={portfolioData} onSwitchVibe={cycleTheme} />}
-        {currentTheme === 'focused' && <FocusedTheme data={portfolioData} onSwitchVibe={cycleTheme} />}
-        {currentTheme === 'vibrant' && <VibrantTheme data={portfolioData} onSwitchVibe={cycleTheme} />}
-      </div>
-    </main>
+        <div className="relative z-10">
+          {/* 2. FEED THE DATA TO THE THEMES */}
+          {currentTheme === 'calm' && <CalmTheme data={portfolioData} onSwitchVibe={cycleTheme} />}
+          {currentTheme === 'focused' && <FocusedTheme data={portfolioData} onSwitchVibe={cycleTheme} />}
+          {currentTheme === 'vibrant' && <VibrantTheme data={portfolioData} onSwitchVibe={cycleTheme} />}
+        </div>
+      </main>
+    </>
   );
 }
