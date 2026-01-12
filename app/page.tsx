@@ -13,31 +13,24 @@ import MobileBlock from '../components/MobileBlock';
 
 export default function Home() {
   const [showOnboarding, setShowOnboarding] = useState(true);
-  // Initialize theme from localStorage or default to 'calm'
-  const [currentTheme, setCurrentTheme] = useState<ThemeId>(() => {
-    if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('currentTheme') as ThemeId;
-      if (savedTheme && ['calm', 'focused', 'vibrant'].includes(savedTheme)) {
-        return savedTheme;
-      }
-    }
-    return 'calm';
-  });
+  // Initialize theme - always start with 'calm' to avoid hydration mismatch
+  // Will be updated from localStorage in useEffect
+  const [currentTheme, setCurrentTheme] = useState<ThemeId>('calm');
 
-  // Check if user is coming from a project detail page (has hash)
+  // Initialize theme from localStorage and check hash navigation
   useEffect(() => {
+    // Restore theme from localStorage if available
+    const savedTheme = localStorage.getItem('currentTheme') as ThemeId;
+    if (savedTheme && ['calm', 'focused', 'vibrant'].includes(savedTheme)) {
+      setCurrentTheme(savedTheme);
+    }
+
     // Check if URL has hash (coming from project detail page)
-    const hash = typeof window !== 'undefined' ? window.location.hash : '';
+    const hash = window.location.hash;
     const hasProjectsHash = hash === '#projects-section' || hash === '#work';
     
     if (hasProjectsHash) {
       setShowOnboarding(false);
-      
-      // Restore theme from localStorage if available
-      const savedTheme = localStorage.getItem('currentTheme') as ThemeId;
-      if (savedTheme && ['calm', 'focused', 'vibrant'].includes(savedTheme)) {
-        setCurrentTheme(savedTheme);
-      }
       
       // Scroll to projects section after a brief delay
       setTimeout(() => {

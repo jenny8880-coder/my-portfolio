@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 // Animated background circles from Calm theme (same as onboarding)
@@ -89,15 +88,14 @@ const BackgroundCircles = () => {
 
 export default function MobileBlock() {
   const [isMobile, setIsMobile] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    // Only run on client side
+    setHasMounted(true);
     
     // Check if device is mobile
     const checkMobile = () => {
-      if (typeof window === 'undefined') return;
-      
       const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
       const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
       // Desktop breakpoint: show mobile block if screen width is less than 1024px
@@ -114,11 +112,12 @@ export default function MobileBlock() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Don't render until mounted (prevents hydration mismatch)
-  if (!mounted) {
+  // Don't render anything on server - only render after client-side mount
+  if (!hasMounted) {
     return null;
   }
 
+  // Don't render if not mobile
   if (!isMobile) {
     return null;
   }
@@ -140,17 +139,19 @@ export default function MobileBlock() {
       <motion.div
         className="relative z-10 flex flex-col items-center justify-center px-8 w-full h-full"
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
+        animate={{ opacity: 1, scale: 1, y: -40 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
-        <Image 
-          src="/empty-state.png" 
+        <img 
+          src="/images/empty-state.svg" 
           alt="" 
-          width={600}
-          height={400}
-          className="w-full max-w-[600px] h-auto"
-          priority
-          unoptimized
+          className="w-full max-w-[510px] h-auto"
+          style={{ 
+            display: 'block', 
+            maxWidth: '85%', 
+            height: 'auto', 
+            objectFit: 'contain'
+          }}
         />
       </motion.div>
     </motion.div>
